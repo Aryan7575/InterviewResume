@@ -7,10 +7,16 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+const cors = require("cors");
+
 app.use(cors({
-    origin:["http://localhost:5173","https://interview-resume-five.vercel.app"],
-    withCredentials:true
-}))
+    origin: [
+        "http://localhost:5173",
+        "https://interview-resume-five.vercel.app"
+    ],
+    credentials: true
+}));
+
 app.use('/api/auth',authRouter)
 app.use('/api/interview',InterviewRouter)
 
