@@ -45,7 +45,9 @@ async function registerUserController(req,res){
     httpOnly: true,
     secure: true,
     sameSite: "none",
-    });
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000
+});
 
     res.status(201).json({
         message:"User Created Successfully",
@@ -91,7 +93,9 @@ async function loginUserController(req,res){
     httpOnly: true,
     secure: true,
     sameSite: "none",
-});
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000
+    });
 
     res.status(201).json({
         message:"User logged in Successfully",

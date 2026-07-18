@@ -1,16 +1,71 @@
-import { createContext,useState } from "react";
-import { getme } from "./services/auth.api";
+import { createContext, useEffect, useState } from "react";
+import { login, logout, getme } from "./services/auth.api";
 
-export const AuthContext = createContext()
+export const AuthContext = createContext();
 
-export const AuthProvider = ({children}) =>{
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+  // Check if user is already logged in
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getme();
+        setUser(data.user);
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return (
-        <AuthContext.Provider value={{user,setUser,loading,setLoading}}>
-        {children}
-        </AuthContext.Provider>
-    )
-}
+    fetchUser();
+  }, []);
+
+  // Login
+  const handleLogin = async ({ email, password }) => {
+    setLoading(true);
+
+    try {
+      await login({ email, password });
+
+      const data = await getme();
+
+      setUser(data.user);
+
+      return data.user;
+    } catch (error) {
+      setUser(null);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Logout
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.log(error);
+    }
+
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        loading,
+        setLoading,
+        handleLogin,
+        handleLogout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
