@@ -3,6 +3,7 @@ const { z } = require("zod");
 const chromium = require("@sparticuz/chromium");
 const puppeteer = require("puppeteer-core");
 const path = require("path");
+const fs = require("fs");
 const InterviewSchema = require("../models/interview.model");
 
 const ai = new Groq({
