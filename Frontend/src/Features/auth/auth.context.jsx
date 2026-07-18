@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { login, logout, getme } from "./services/auth.api";
+import { login, logout, getme,register } from "./services/auth.api";
 
 export const AuthContext = createContext();
 
@@ -22,6 +22,29 @@ export const AuthProvider = ({ children }) => {
 
     fetchUser();
   }, []);
+
+  const handleRegister = async ({ username, email, password }) => {
+  setLoading(true);
+
+  try {
+    await register({
+      username,
+      email,
+      password,
+    });
+
+    const data = await getme();
+
+    setUser(data.user);
+
+    return data.user;
+  } catch (error) {
+    setUser(null);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Login
   const handleLogin = async ({ email, password }) => {
@@ -63,6 +86,7 @@ export const AuthProvider = ({ children }) => {
         setLoading,
         handleLogin,
         handleLogout,
+        handleRegister,
       }}
     >
       {children}

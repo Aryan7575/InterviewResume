@@ -30,7 +30,7 @@ export const useInterview = () =>{
     } finally {
         setLoading(false);
     }
-    return response.interviewReport; // IMPORTANT
+    return response ? response.interviewReport : null; // IMPORTANT
 };
 
     const getReportById = async (interviewId) => {
@@ -44,8 +44,7 @@ export const useInterview = () =>{
             setLoading(false)
         }
 
-        return response.interviewReport
-    }
+        return response ? response.interviewReport : null;    }
 
     const getAllReports = async () => {
         setLoading(true)
@@ -54,10 +53,12 @@ export const useInterview = () =>{
              response = await getAllInterviewReports()
             setReports(response.interviewReports)
         }catch(error){
-        }finally{
+        console.error(error);
+        return null;
+        }   finally{
             setLoading(false)
         }
-        return response.interviewReports
+        return response ? response.interviewReport : null;
     }
 
     const getResumePdf = async (interviewReportId) => {
@@ -65,13 +66,16 @@ export const useInterview = () =>{
         let response = null
         try{
             response = await generateResumePdf({interviewReportId}) 
-            const url = window.URL.createObjectURL(new Blob([response], { type: 'application/pdf' }));
+            const url = window.URL.createObjectURL(response);
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', `resume_${interviewReportId}.pdf`);
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
+            link.remove();
+
+            window.URL.revokeObjectURL(url);
         }catch(error){
             console.error("Error generating resume PDF:", error);
         }finally{
