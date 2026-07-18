@@ -8,7 +8,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import "../styles/Interview.scss";
-import { useParams,useNavigate } from "react-router";
+import { useParams,useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 // ------------------------------

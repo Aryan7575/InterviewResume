@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import{ useNavigate } from "react-router"
+import{ useNavigate } from "react-router-dom"
 import { Briefcase, User, Upload, Info, Star } from "lucide-react";
 import "../styles/Home.scss";
 import { useInterview } from "../hooks/useInterview.js"; 
