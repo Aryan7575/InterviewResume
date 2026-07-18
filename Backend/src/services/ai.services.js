@@ -1,6 +1,7 @@
 const Groq = require("groq-sdk");
 const { z } = require("zod");
 const puppeteer = require("puppeteer");
+const path = require("path");
 const InterviewSchema = require("../models/interview.model");
 
 const ai = new Groq({
@@ -256,7 +257,9 @@ Always use lowercase.
 }
 
 async function generatePdfHtml(htmlContent) {
+
     const browser = await puppeteer.launch({
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
         headless: true,
         args: [
             "--no-sandbox",
@@ -265,26 +268,28 @@ async function generatePdfHtml(htmlContent) {
         ]
     });
 
-    const page = await browser.newPage();
+    try {
+        const page = await browser.newPage();
 
-    await page.setContent(htmlContent, {
-        waitUntil: "networkidle0"
-    });
+        await page.setContent(htmlContent, {
+            waitUntil: "networkidle0",
+        });
 
-    const pdfBuffer = await page.pdf({
-        format: "A4",
-        printBackground: true,
-        margin: {
-            top: "20mm",
-            bottom: "20mm",
-            left: "15mm",
-            right: "15mm"
-        }
-    });
+        const pdfBuffer = await page.pdf({
+            format: "A4",
+            printBackground: true,
+            margin: {
+                top: "20mm",
+                bottom: "20mm",
+                left: "15mm",
+                right: "15mm",
+            },
+        });
 
-    await browser.close();
-
-    return pdfBuffer;
+        return pdfBuffer;
+    } finally {
+        await browser.close();
+    }
 }
 
 async function generateResumePdf({
