@@ -256,26 +256,19 @@ Always use lowercase.
     }
 }
 
-const fs = require("fs");
-
 async function generatePdfHtml(htmlContent) {
 
-    console.log("Executable Path:", puppeteer.executablePath());
+   // ✅ correct — await it first
+const executablePath = await chromium.executablePath();
+console.log("Executable Path:", executablePath);
+console.log("Browser Exists:", fs.existsSync(executablePath));
 
-    console.log(
-        "Browser Exists:",
-        fs.existsSync(puppeteer.executablePath())
-    );
-
-    const browser = await puppeteer.launch({
-        executablePath: puppeteer.executablePath(),
-        headless: true,
-        args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage",
-        ],
-    });
+const browser = await puppeteer.launch({
+  args: chromium.args,
+  defaultViewport: chromium.defaultViewport,
+  executablePath,
+  headless: chromium.headless,
+});
 
     try {
         const page = await browser.newPage();
