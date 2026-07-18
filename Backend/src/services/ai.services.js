@@ -1,6 +1,7 @@
 const Groq = require("groq-sdk");
 const { z } = require("zod");
-const puppeteer = require("puppeteer");
+const chromium = require("@sparticuz/chromium");
+const puppeteer = require("puppeteer-core");
 const path = require("path");
 const InterviewSchema = require("../models/interview.model");
 
