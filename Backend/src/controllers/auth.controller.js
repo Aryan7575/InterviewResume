@@ -43,8 +43,8 @@ async function registerUserController(req,res){
 
     res.cookie("token", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
     path: "/",
     maxAge: 24 * 60 * 60 * 1000
 });
@@ -71,6 +71,7 @@ async function loginUserController(req,res){
     const user = await userModel.findOne({email})
 
     if(!user){
+        console.log("Login attempt: user not found for email:", email);
         return res.status(401).json({
             message:"Invalid email & password"
         })
@@ -79,6 +80,7 @@ async function loginUserController(req,res){
     const isPassValid = await bcrypt.compare(password, user.password)
 
     if(!isPassValid){
+        console.log("Login attempt: invalid password for user:", email);
         return res.status(401).json({
             message:"Password is incorrect"
         })
@@ -91,8 +93,8 @@ async function loginUserController(req,res){
 
     res.cookie("token", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
     path: "/",
     maxAge: 24 * 60 * 60 * 1000
     });
@@ -122,8 +124,8 @@ async function logOutUserController(req,res){
 
     res.clearCookie("token", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? "none" : "lax",
 });
 
     res.status(201).json({
