@@ -7,7 +7,7 @@ import Protected from "./Features/auth/components/Protected";
 
 export const router = createBrowserRouter([
   {
-    path: "/login",
+    path: "/",
     element: <Login />,
   },
   {
@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path:"/",
+    path:"/home",
     element:<Protected><Home /></Protected>
   },
   {
